@@ -28,7 +28,7 @@ class PostsController < ApplicationController
 
     if @post.save
       # Publish post data
-      Publisher.publish("posts", @post.attributes)
+      Publisher.publish("posts", @post.attributes.merge("state": "create"))
 
       redirect_to @post, notice: 'Post was successfully created.'
     else
@@ -41,6 +41,7 @@ class PostsController < ApplicationController
   def update
     respond_to do |format|
       if @post.update(post_params)
+        Publisher.publish("posts", @post.attributes.merge("state": "update"))
         format.html { redirect_to @post, notice: 'Post was successfully updated.' }
         format.json { render :show, status: :ok, location: @post }
       else
@@ -55,6 +56,7 @@ class PostsController < ApplicationController
   def destroy
     @post.destroy
     respond_to do |format|
+      Publisher.publish("posts", @post.attributes.merge("state": "delete"))
       format.html { redirect_to posts_url, notice: 'Post was successfully destroyed.' }
       format.json { head :no_content }
     end

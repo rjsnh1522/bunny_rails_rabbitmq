@@ -1,6 +1,6 @@
 ## A working example of rabbitmq, Bunny and Sneaker gem
 Two apps communicating over RabbitMQ
-
+CRUD app using RabbitMQ and two rails application
 Run each app over a different port (i.e. 3000/3001)
 
 #### Blog is a producer app

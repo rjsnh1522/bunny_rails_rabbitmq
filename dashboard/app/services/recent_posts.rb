@@ -17,7 +17,26 @@ class RecentPosts
   # `raw_post` is already a JSON string
   # so there is no need to encode it as JSON
   def self.push(raw_post)
-    $redis.lpush(KEY, raw_post)
-    $redis.ltrim(KEY, 0, STORE_LIMIT-1)
+    j_post = JSON.parse(raw_post).with_indifferent_access
+
+    if j_post[:state] == "create"
+      $redis.lpush(KEY, raw_post)
+      $redis.ltrim(KEY, 0, STORE_LIMIT-1)
+    elsif j_post[:state] == "update"
+      $redis.lrange(KEY,0,STORE_LIMIT-1).each do |s_raw_post|
+        c_raw_post = JSON.parse(s_raw_post).with_indifferent_access
+        if c_raw_post[:id] == j_post[:id]
+           $redis.lrem(KEY,-1, s_raw_post)
+           $redis.lpush(KEY,raw_post)
+        end
+      end
+    elsif j_post[:state] == "delete"
+      $redis.lrange(KEY,0,STORE_LIMIT-1).each do |s_raw_post|
+        c_raw_post = JSON.parse(s_raw_post).with_indifferent_access
+        if c_raw_post[:id] == j_post[:id]
+           $redis.lrem(KEY,-1, s_raw_post)
+        end
+      end
+    end
   end
 end
