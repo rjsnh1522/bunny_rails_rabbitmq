@@ -1,9 +1,10 @@
-# a-working-Bunny-example
+## A working example of rabbitmq, Bunny and Sneaker gem
 Two apps communicating over RabbitMQ
 
 Run each app over a different port (i.e. 3000/3001)
 
-
+#### Blog is a producer app
+#### Dashboard as a consumer app
 
 
 to run the sneakers worker run **WORKERS=PostsWorker rake sneakers:run** in *dashboard app*
